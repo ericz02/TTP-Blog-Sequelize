@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 4000;
 const session = require('express-session');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const { User } = require('./models');
 
@@ -79,6 +79,81 @@ app.post("/signup", async (req, res) => {
   }
 })
 
-// get all post
+// login a user
+app.post("/login", async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { email: req.body.email } });
 
-// get specific post
+    if (user === null) {
+      return res.status(401).json({
+        message: "Incorrect credentials",
+      });
+    }
+    
+    // if user exists, compare the password
+    bcrypt.compare(req.body.password, user.password, (error, result) => {
+      if (result) {
+        req.session.userId = user.id;
+
+        res.status(200).json({
+          message: "Logged in successfully",
+          user: {
+            name: user.name,
+            email: user.email,
+          },
+        });
+      } else {
+        res.status(401).json({ message: "Incorrect credentials" });
+      }
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error has occurred during the login process" });
+  }
+});
+
+// destory session and logout user
+app.delete("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.sendStatus(500);
+    }
+
+    res.clearCookie("connect.sid");
+    return res.sendStatus(200);
+  });
+});
+
+// get all post
+app.get("/posts", async (req, res) => {
+  try {
+    const allPost = await Post.findAll();
+    res.status(200).json(allPost);
+    
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+})
+
+// get a specific post by id
+app.get("/posts/:id", authenticateUser, async (req, res) => {
+  const postId = parseInt(req.params.id, 10);
+
+  try {
+    const post = await Post.findOne({
+      where: { id: postId },
+      include: [Comment],
+    });
+
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).send({ message: "Post not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: err.message });
+  }
+});
