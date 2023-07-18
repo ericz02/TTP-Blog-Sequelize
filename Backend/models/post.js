@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       title: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
+        validate: {
           len: {
             args: [3, 50],
             msg: "Title must be between 3 and 50 characters long.",
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.TEXT,
         allowNull: false,
-        validation: {
+        validate: {
           len: {
             args: [1, 500],
             msg: "Content must be between 1 and 500 characters long.",

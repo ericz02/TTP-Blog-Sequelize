@@ -4,13 +4,13 @@ const port = 4000;
 
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
-const { Post, Users, Comment } = require("./models");
+const { Post, User, Comment } = require("./models");
 require("dotenv").config();
 
 app.use((req, res, next) => {
   console.log(`Request: ${req.method} ${req.originalUrl}`);
   res.on("finish", () => {
-    console.log(`Response Status: "${res.statusCode}`);
+    console.log(`Response Status: ${res.statusCode}`);
   });
   next();
 });
@@ -51,7 +51,7 @@ app.post("/signup", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   try {
-    const user = await Users.create({
+    const user = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: hashedPassword,
@@ -73,7 +73,7 @@ app.post("/signup", async (req, res) => {
         .json({ errors: error.errors.amp((e) => e.message) });
     }
     res.status(500).json({
-      message: "Error occurred while creating user",
+      message: "Error has occurred while creating user :(",
       error: error,
     });
   }

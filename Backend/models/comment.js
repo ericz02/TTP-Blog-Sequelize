@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.TEXT,
         allowNull: false,
-        validation: {
+        validate: {
           len: {
             args: [1, 255],
             msg: "Comment must be between 1 and 255 characters",

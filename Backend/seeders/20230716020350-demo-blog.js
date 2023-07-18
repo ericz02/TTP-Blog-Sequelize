@@ -8,15 +8,15 @@ module.exports = {
       "users",
       [
         {
-          name: "Felix",
-          email: "Felix@Felix.com",
+          name: "eric",
+          email: "eric@dev.com",
           password: await bcrypt.hash("password", 10),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "Troll",
-          email: "Troll@troll.com",
+          name: "john",
+          email: "john@dev.com",
           password: await bcrypt.hash("password", 10),
           createdAt: new Date(),
           updatedAt: new Date(),
