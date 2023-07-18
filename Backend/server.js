@@ -4,7 +4,7 @@ const port = 4000;
 
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
-const { Post, User, Comment } = require("./models");
+const { Post, Users, Comment } = require("./models");
 require("dotenv").config();
 
 app.use((req, res, next) => {
@@ -51,7 +51,7 @@ app.post("/signup", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   try {
-    const user = await User.create({
+    const user = await Users.create({
       name: req.body.name,
       email: req.body.email,
       password: hashedPassword,
@@ -82,7 +82,7 @@ app.post("/signup", async (req, res) => {
 // post request to login
 app.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await Users.findOne({ where: { email: req.body.email } });
 
     if (user === null) {
       return res.status(401).json({
